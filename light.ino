@@ -7,7 +7,7 @@
 #define RBLINK 2
 #define LENGTH 55
 
-int brakeVal = 0, lBlinkVal = 0, rBlinkVal = 0, blinkState = 0, currentFrame = 0;
+int brakeVal = 0, lBlinkVal = 0, rBlinkVal = 0, blinkState = 0, currentFrame = 0, r = 0, g = 0, b = 0;
 
 Adafruit_NeoPixel l_strip = Adafruit_NeoPixel(LENGTH, LEFT_OUT, NEO_GRB + NEO_KHZ800);
 Adafruit_NeoPixel r_strip = Adafruit_NeoPixel(LENGTH, RIGHT_OUT, NEO_GRB + NEO_KHZ800);
@@ -143,10 +143,13 @@ void loop() {
     for (int i=0; i<LENGTH; i++) {
         int pixelIndex = i % pixels;
         int index = currentFrame*pixels*3 + pixelIndex*3;
+        r = pgm_read_byte_near(data+index);
+        g = pgm_read_byte_near(data+index+1);
+        b = pgm_read_byte_near(data+index+2);
 
         //Note: We're using pgm_read_byte_near to read bytes out of the data array stored in PROGMEM. These functions are not required for all configurations
-        l_strip.setPixelColor(i,pgm_read_byte_near(data+index),pgm_read_byte_near(data+index+1),pgm_read_byte_near(data+index+2));
-        r_strip.setPixelColor(i,pgm_read_byte_near(data+index),pgm_read_byte_near(data+index+1),pgm_read_byte_near(data+index+2));
+        l_strip.setPixelColor(i,r,g,b);
+        r_strip.setPixelColor(i,r,g,b);
     }
     l_strip.show();
     r_strip.show();
